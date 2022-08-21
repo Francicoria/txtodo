@@ -1,0 +1,4 @@
+x Completed tasks
+(A) Priority
+2022-06-21 (optional) creation date
+x (B) Context+projects @context @anotherone +project +yesanother
