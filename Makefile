@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c99 -O2 -Wall -Wextra -Wpedantic
-SRC = $(wildcard src/*.c)
+SRC = src/start.c
 EXE = txtodo
 
 all: clean compile run

@@ -1,9 +1,24 @@
 #include <stdio.h>
-//#include "parser.c"
+
+enum Status {
+	ACTIVE,
+	FINISHED
+};
+
+typedef struct {
+	char * task;
+	int status;
+	char priority_letter;
+	char * contexts;
+	char * tags;
+} Task;
+
+#include "parser.c"
 
 int main(int argc, char ** argv) {
 	char * filename = {0};
 	FILE * fp;
+
 	switch (argc) {
 		case 1:
 			printf("No argument passed, assuming you want to create a new todo.txt file.\n");
@@ -14,8 +29,9 @@ int main(int argc, char ** argv) {
 				fprintf(stderr, "%s does not exist or is not readable/writable.\n", filename);
 				return 1;
 			}
-			printf("\x1b[3mFilename: \x1b[32m%s\x1b[m\n", argv[1]);
-			parseFile(fp);
+			//printf("\x1b[3mFilename: \x1b[32m%s\x1b[m\n", argv[1]);
+			fileToTasks(fp, tasks);
+			//parseFile(fp);
 			fclose(fp);
 			break;
 		default:
