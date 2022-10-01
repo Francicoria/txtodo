@@ -46,10 +46,9 @@ int main(int argc, char ** argv) {
 				//printf("%s\n", tasks[i].task);
 
 				tasks[i] = parseTask(tasks[i]);
-				printf("Task n°%d\nIs finished: %d\nPriority letter: %c\nContexts: %s\nTags: %s\n",
+				printf("Task n°%d\nIs finished: %s\nPriority letter: %c\nContexts: %s\nTags: %s\n",
 				       i + 1,
-				       tasks[i].status,// == FINISHED ? "yes" : "no",
-				       // TODO fixare la merda
+				       tasks[i].status == FINISHED ? "yes" : "no",
 				       tasks[i].priorityLetter,
 				       tasks[i].contexts,
 				       tasks[i].tags

@@ -27,34 +27,38 @@ Task parseTask(Task task) {
 	task.tags[0] = '\0';
 
 	token = strtok(task.task, " ");
+
 	while (token != NULL) {
 		switch (check) {
 			case FINISH:
 				if (token[0] == 'x' &&
 				    token[1] == '\0') {
-					task.status = 420;
-				} else {
-					task.status = ACTIVE;
-					check = PRIORITY;
-				}
+					task.status = FINISHED;
+					token = strtok(NULL, " ");
+				} else task.status = ACTIVE;
+				check = PRIORITY;
 				break;
 			case PRIORITY:
-				token = strtok(NULL, " ");
 				if (token[0] == '(' &&
 				    token[2] == ')' &&
 				    token[3] == '\0') {
 					task.priorityLetter = token[1];
-				} else {
-					task.priorityLetter = '#';
-					check = CONTEXTS_TAGS;
-				}
+					token = strtok(NULL, " ");
+				} else task.priorityLetter = '#';
+				check = CONTEXTS_TAGS;
+				token = strtok(NULL, " ");
 				break;
 			case CONTEXTS_TAGS:
 				if (token[0] == '@' &&
-				    token[1] != '\0') strcat(task.contexts, "pog ");
+				    token[1] != '\0') {
+					strcat(task.contexts, token);
+					strcat(task.contexts, " ");
+				}
 				if (token[0] == '+' &&
-				    token[1] != '\0') strcat(task.tags, "non ");
-
+				    token[1] != '\0') {
+					strcat(task.tags, token);
+					strcat(task.tags, " ");
+				}
 				token = strtok(NULL, " ");
 				break;
 		}
