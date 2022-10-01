@@ -1,8 +1,12 @@
 ### A simple todo.txt implementation in C.
 
-Build on linux
+Build on linux (GCC)
 ```console
 $ ./build.sh
+```
+and on windows (MSYS2 MinGW64)
+```console
+$ ./build.cmd
 ```
 
 As I go, i will add sane features like:
