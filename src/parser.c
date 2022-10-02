@@ -22,11 +22,16 @@ enum Check {
 Task parseTask(Task task) {
 	int check = FINISH;
 	char * token;
+	char taskBody[MAX_TASK_SIZE] = {0};
+	for (int i = 0; task.task[i] != '\0'; ++i) {
+		taskBody[i] = task.task[i];
+		taskBody[i + 1] = '\0';
+	}
 
 	task.contexts[0] = '\0';
-	task.tags[0] = '\0';
+	task.tags[0]     = '\0';
 
-	token = strtok(task.task, " ");
+	token = strtok(taskBody, " ");
 
 	while (token != NULL) {
 		switch (check) {

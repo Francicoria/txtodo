@@ -8,8 +8,8 @@
 
 
 enum Status {
-	ACTIVE = 69,
-	FINISHED = 420
+	ACTIVE   = 1,
+	FINISHED = 0
 };
 
 typedef struct {
@@ -46,8 +46,8 @@ int main(int argc, char ** argv) {
 				//printf("%s\n", tasks[i].task);
 
 				tasks[i] = parseTask(tasks[i]);
-				printf("Task n°%d\nIs finished: %s\nPriority letter: %c\nContexts: %s\nTags: %s\n",
-				       i + 1,
+				printf("Task: %s\nIs finished: %s\nPriority letter: %c\nContexts: %s\nTags: %s\n\n",
+				       tasks[i].task,
 				       tasks[i].status == FINISHED ? "yes" : "no",
 				       tasks[i].priorityLetter,
 				       tasks[i].contexts,
