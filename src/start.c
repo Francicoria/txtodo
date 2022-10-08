@@ -37,26 +37,27 @@ double timeID(void) {
 	time_t now = time(NULL);
 	
 	double tmpID = difftime(now, mktime(&the2000));
-	return tmpID
+	return tmpID;
 }
 
 int main(int argc, char ** argv) {
-	char * filename = {0};
 	FILE * fp;
+	char filename[1024] = {0};
 
 	switch (argc) {
 		case 1:
 			// TODO
 			printf("No argument passed, assuming you want to create a new todo.txt file.\n");
 			double filenameTmpID = timeID();
-			snprintf(filename, 70, "tmp_%.f.todo.txt", filenameTmpID);
+			snprintf(filename, 90, "tmp_%.f.todo.txt", filenameTmpID);
 			if ((fp = fopen(filename, "w+")) == NULL) {
-				fprintf(stderr, "%s does not exist or is not readable/writable.\n", filename);
+				fprintf(stderr, "Cannot create file %s.\n", filename);
 				return 1;
 			}
 			break;
 		case 2:
-			filename = argv[1];
+			strcpy(filename, argv[1]);
+
 			if ((fp = fopen(filename, "r+")) == NULL) {
 				fprintf(stderr, "%s does not exist or is not readable/writable.\n", filename);
 				return 1;
