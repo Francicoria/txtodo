@@ -1,5 +1,9 @@
 #include <stdio.h>
-
+#ifdef WIN32
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
 // if the user exceeds any of these caps, i would be impressed.
 #define MAX_TASKS          70
 #define MAX_CONTEXTS_SIZE  40
@@ -22,6 +26,19 @@ typedef struct {
 
 #include "parser.c"
 
+double timeID(void) {
+	struct tm the2000 = {
+		.tm_sec = 0,  .tm_min = 0, .tm_hour = 0,
+		.tm_mday = 0, .tm_mon = 0, .tm_year = 100,
+		.tm_yday = 0
+		};
+	
+	time_t now = time(NULL);
+	
+	double tmpID = difftime(now, mktime(&the2000));
+	return tmpID
+}
+
 int main(int argc, char ** argv) {
 	char * filename = {0};
 	FILE * fp;
@@ -30,6 +47,12 @@ int main(int argc, char ** argv) {
 		case 1:
 			// TODO
 			printf("No argument passed, assuming you want to create a new todo.txt file.\n");
+			double filenameTmpID = timeID();
+			snprintf(filename, 70, "tmp_%.f.todo.txt", filenameTmpID);
+			if ((fp = fopen(filename, "w+")) == NULL) {
+				fprintf(stderr, "%s does not exist or is not readable/writable.\n", filename);
+				return 1;
+			}
 			break;
 		case 2:
 			filename = argv[1];
@@ -37,6 +60,7 @@ int main(int argc, char ** argv) {
 				fprintf(stderr, "%s does not exist or is not readable/writable.\n", filename);
 				return 1;
 			}
+			//printf("\x1b[3mFilename: \x1b[32m%s\x1b[m\n", argv[1]);
 			Task tasks[MAX_TASKS];
 			for (int i = 0; i < MAX_TASKS; ++i) {
 				tasks[i] = fileLineToTask(fp);
@@ -54,7 +78,6 @@ int main(int argc, char ** argv) {
 				       tasks[i].tags
 				       );
 			}
-			//printf("\x1b[3mFilename: \x1b[32m%s\x1b[m\n", argv[1]);
 			//parseFile(fp);
 			fclose(fp);
 			break;
