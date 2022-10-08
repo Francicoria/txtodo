@@ -25,6 +25,7 @@ typedef struct {
 } Task;
 
 #include "parser.c"
+#include "editor.c"
 
 double timeID(void) {
 	struct tm the2000 = {
