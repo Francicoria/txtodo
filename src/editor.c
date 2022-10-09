@@ -4,7 +4,8 @@ void save(FILE * file, char * buffer) {
 	fwrite(buffer, sizeof(char), strlen(buffer), file);
 }
 
-char * cliEdit(FILE * file) {
-	char * text = "Buffer poggggg!";
+Task * cliEdit(FILE * file) {
+	Task empty_tasks[MAX_TASKS];
+	char * text = "Buffer \npoggggg!";
 	return text;
 }
