@@ -51,15 +51,17 @@ int main(int argc, char ** argv) {
 			double filenameTmpID = timeID();
 			snprintf(filename, 90, "tmp_%.f.todo.txt", filenameTmpID);
 			if ((fp = fopen(filename, "w+")) == NULL) {
-				fprintf(stderr, "Cannot create file %s.\n", filename);
+				perror("ERROR");
 				return 1;
 			}
+			char * buffer = cliEdit(fp);
+			save(fp, buffer);
 			break;
 		case 2:
 			strcpy(filename, argv[1]);
 
 			if ((fp = fopen(filename, "r+")) == NULL) {
-				fprintf(stderr, "%s does not exist or is not readable/writable.\n", filename);
+				perror("ERROR");
 				return 1;
 			}
 			//printf("\x1b[3mFilename: \x1b[32m%s\x1b[m\n", argv[1]);
