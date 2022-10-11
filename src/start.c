@@ -54,8 +54,8 @@ int main(int argc, char ** argv) {
 				perror("ERROR");
 				return 1;
 			}
-			char * buffer = cliEdit(fp);
-			save(fp, buffer);
+			Task * newTasks = cliEdit();
+			save(fp, newTasks);
 			break;
 		case 2:
 			strcpy(filename, argv[1]);
