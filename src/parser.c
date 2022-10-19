@@ -5,9 +5,9 @@ Task fileLineToTask(FILE * file) {
 	Task task;
 	task.task[0] = '\0';
 	int strIndex = 0;
-	for (int c; (c = getc(file)) != '\n';) {
+	for (int c; (c = getc(file)) != '\n'; ++strIndex) {
 		if (c == EOF) break;
-		task.task[strIndex++] = c;
+		task.task[strIndex] = c;
 	}
 	task.task[strIndex] = '\0';
 	return task;

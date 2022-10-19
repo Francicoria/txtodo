@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #ifdef WIN32
 #include <sys/time.h>
 #else
@@ -54,7 +55,8 @@ int main(int argc, char ** argv) {
 				perror("ERROR");
 				return 1;
 			}
-			Task * newTasks = cliEdit();
+			Task empty_tasks[MAX_TASKS];
+			Task * newTasks = cliEdit(empty_tasks);
 			save(fp, newTasks);
 			break;
 		case 2:
@@ -68,10 +70,12 @@ int main(int argc, char ** argv) {
 			Task tasks[MAX_TASKS];
 			for (int i = 0; i < MAX_TASKS; ++i) {
 				tasks[i] = fileLineToTask(fp);
-				// If the first character of a line is end of line (\0)
+				// If the first character of a line is ^
 				// i assume that the rest of the file is empty.
-				if (tasks[i].task[0] == '\0') break;
-				//printf("%s\n", tasks[i].task);
+				if (tasks[i].task[0] == '^') break;
+
+				// skip line if it's empty.
+				if (tasks[i].task[0] == '\0') continue;
 
 				tasks[i] = parseTask(tasks[i]);
 				printf("Task: %s\nIs finished: %s\nPriority letter: %c\nContexts: %s\nTags: %s\n\n",
