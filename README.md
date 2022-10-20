@@ -16,4 +16,4 @@ As I go, i will add sane features like:
 	- [ ] add, remove tasks to projects.
 	- [ ] add, remove tasks to contexts.
 	- [ ] add, remove 'finished' status to tasks.
-~~- [ ] Gui, in something like sdl or imgui or something else, have to decide which i prefer.~~ i won't create a gui, it's kinda out of scope, i'll just create a cli
+- [ ] ~~Gui, in something like sdl or imgui or something else, have to decide which i prefer.~~ i won't create a gui, it's kinda out of scope for this project+it's kinda hard to write a gui in C, i'll just create a cli
