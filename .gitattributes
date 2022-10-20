@@ -1,0 +1,4 @@
+* text eof=lf
+
+*.c text
+*.h text
