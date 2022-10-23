@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void save(FILE * file, Task tasks[]) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
@@ -23,10 +24,44 @@ void printPreview(Task tasks[]) {
 	}
 }
 
+enum Commands {
+	DOWN = 'j',
+	UP   = 'k',
+	QUIT = 'q',
+	NOTHING = ' '
+};
+
+int getCommand(void) {
+	int command;
+	int c;
+	char buffer[256];
+	int i = 0;
+
+	fputs("> ", stdout);
+	while ((c = fgetc(stdin)) != '\n') {
+		if (c == EOF) exit(1);
+		buffer[i++] = c;
+		buffer[i] = '\0';
+	}
+	if (buffer[1] == '\0') command = buffer[0];
+	else command = NOTHING;
+	return command;
+}
+
 Task * cliEdit(Task empty_tasks[]) {
 	strcpy(empty_tasks[0].task, "Hello!");
 	strcpy(empty_tasks[1].task, "Another one line of dust.");
 	strcpy(empty_tasks[2].task, "^");
-	printPreview(empty_tasks);
+
+	int command;
+	while ((command = getCommand()) != QUIT) {
+		printPreview(empty_tasks);
+		switch (command) {
+			UP: break;
+			DOWN: break;
+			NOTHING:
+			default: break;
+		}
+	}
 	return empty_tasks;
 }
