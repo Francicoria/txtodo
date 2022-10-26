@@ -56,7 +56,11 @@ int main(int argc, char ** argv) {
 				return 1;
 			}
 			Task empty_tasks[MAX_TASKS];
-			Task * newTasks = cliEdit(empty_tasks);
+			strcpy(empty_tasks[0].task, "Hello!");
+			strcpy(empty_tasks[1].task, "Another one line of dust.");
+			strcpy(empty_tasks[2].task, "Byeeee");
+			strcpy(empty_tasks[3].task, "^");
+			Task * newTasks = viewMode(empty_tasks);
 			save(fp, newTasks);
 			break;
 		case 2:

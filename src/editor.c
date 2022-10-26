@@ -12,13 +12,16 @@ void save(FILE * file, Task tasks[]) {
 	}
 }
 
-void printPreview(Task tasks[]) {
+void printPreview(Task tasks[], int selectedTask) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
 		// If the first character of a line is ^
 		// i assume that the rest of the file is empty.
 		if (tasks[i].task[0] == '^') break;
 		// skip line if it's empty.
 		if (tasks[i].task[0] == '\0') continue;
+
+		if (i == selectedTask) printf("[%3d]  ", i);
+		else		       printf(" %3d   ", i);
 
 		puts(tasks[i].task);
 	}
@@ -38,7 +41,7 @@ int getCommand(void) {
 	int i = 0;
 
 	fputs("> ", stdout);
-	while ((c = fgetc(stdin)) != '\n') {
+	while ((c = getc(stdin)) != '\n') {
 		if (c == EOF) exit(1);
 		buffer[i++] = c;
 		buffer[i] = '\0';
@@ -48,20 +51,25 @@ int getCommand(void) {
 	return command;
 }
 
-Task * cliEdit(Task empty_tasks[]) {
-	strcpy(empty_tasks[0].task, "Hello!");
-	strcpy(empty_tasks[1].task, "Another one line of dust.");
-	strcpy(empty_tasks[2].task, "^");
-
+Task * viewMode(Task tasks[]) {
+	int selectedTask = 0;
 	int command;
 	while ((command = getCommand()) != QUIT) {
-		printPreview(empty_tasks);
+		//printf("command = %d\n", command);
 		switch (command) {
-			UP: break;
-			DOWN: break;
-			NOTHING:
+			case UP:
+				selectedTask -= (selectedTask == 0) ? 0 : 1;
+				break;
+			case DOWN:
+				if (selectedTask == MAX_TASKS || tasks[selectedTask + 1].task[0] == '^')
+					selectedTask += 0;
+				else	selectedTask += 1;
+				break;
+
+			case NOTHING:
 			default: break;
 		}
+		printPreview(tasks, selectedTask);
 	}
-	return empty_tasks;
+	return tasks;
 }

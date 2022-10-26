@@ -1,7 +1,6 @@
-- [ ] View mode (not able to do anything, just move the selection up and down tasks)
+- [ ] View mode
+	- [x] Not able to do anything, just move the selection up and down tasks (and quit with 'q')
 	- [ ] Shortcuts in view mode (press s to save, q to quit, c to edit contexts, x to set the task to 'finished')
+- [x] No argument passed = create new file in view mode
 - [ ] Edit mode
 	- [ ] Make the user edit lines (have to decide how to do this input method, this is completely new to me)
-- [ ] No argument passed = create new file in view mode
-	- *Hypotetical Q*: Why view mode if it's a new file with nothing in it?
-	- *Hypotetical A*: Would the UX be better? I want the user to be in stable env, where they always have the same result doing the same thing. User passes file as argument? open file, in view mode. User doesn't pass anything? A blank buffer, in view mode, as the user **expects** it to be.
