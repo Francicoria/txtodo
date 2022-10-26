@@ -27,12 +27,64 @@ void printPreview(Task tasks[], int selectedTask) {
 	}
 }
 
+enum EditModeCommands {
+	INSERT = 'i',
+	DELETE = 'd'
+};
+
 enum Commands {
 	DOWN = 'j',
 	UP   = 'k',
+	EDIT = 'e',
 	QUIT = 'q',
 	NOTHING = ' '
 };
+
+char * getPrompt(void) {
+	char buffer[512];
+	char * token;
+	int command;
+	char * prompt;
+
+	fputs("-Edit mode- > ", stdout);
+	fgets(buffer, 512, stdin);
+
+	token = strtok(buffer, " ");
+	if (token == NULL || strlen(token) > 1) {
+		fprintf(stderr, "Command lenght is more then 1 character\n");
+		exit(1);
+	}
+	command = token[0];
+
+	switch (command) {
+		case INSERT:
+		    token = strtok(NULL, " ");
+		    if (token == NULL) exit(1);
+		    strcat(prompt, "i ");
+		    strcat(prompt, token);
+		    break;
+		case DELETE:
+		    strcpy(prompt, "x");
+		    return prompt;
+		default:
+		    puts("unreachable");
+		    exit(1);
+	}
+
+	while (token != NULL) {
+		token = strtok(NULL, " ");
+		if (token == NULL) break;
+		strcat(prompt, token);
+	}
+
+	return prompt;
+}
+
+Task * editMode(Task tasks[], int selectedTask) {
+	char * prompt = getPrompt();
+	if (prompt[0] == 'x') strcpy(tasks[selectedTask].task, "");
+	return tasks;
+}
 
 int getCommand(void) {
 	int command;
@@ -40,7 +92,7 @@ int getCommand(void) {
 	char buffer[256];
 	int i = 0;
 
-	fputs("> ", stdout);
+	fputs("-View mode- > ", stdout);
 	while ((c = getc(stdin)) != '\n') {
 		if (c == EOF) exit(1);
 		buffer[i++] = c;
@@ -58,14 +110,16 @@ Task * viewMode(Task tasks[]) {
 		//printf("command = %d\n", command);
 		switch (command) {
 			case UP:
-				selectedTask -= (selectedTask == 0) ? 0 : 1;
-				break;
+			    selectedTask -= (selectedTask == 0) ? 0 : 1;
+			    break;
 			case DOWN:
-				if (selectedTask == MAX_TASKS || tasks[selectedTask + 1].task[0] == '^')
-					selectedTask += 0;
-				else	selectedTask += 1;
-				break;
+			    if (selectedTask == MAX_TASKS || tasks[selectedTask + 1].task[0] == '^') selectedTask += 0;
+			    else selectedTask += 1;
+			    break;
 
+			case EDIT:
+			    tasks = editMode(tasks, selectedTask);
+			    break;
 			case NOTHING:
 			default: break;
 		}
