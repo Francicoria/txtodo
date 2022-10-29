@@ -3,10 +3,10 @@
 
 void save(FILE * file, Task tasks[]) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
-		// If the first character of a line is end of line (\0)
+		// If the first character of a line is ^
 		// i assume that the rest of the file is empty.
-		if (tasks[i].task[0] == '\0') break;
-		//printf("%s\n", tasks[i].task);
+		if (tasks[i].task[0] == '^') break;
+		if (tasks[i].task[0] == '\0') continue;
 		strcat(tasks[i].task, "\n");
 		fwrite(tasks[i].task, sizeof(char), strlen(tasks[i].task), file);
 	}
