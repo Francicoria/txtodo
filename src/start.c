@@ -29,7 +29,7 @@ double timeID(void) {
 		.tm_sec = 0,  .tm_min = 0, .tm_hour = 0,
 		.tm_mday = 0, .tm_mon = 0, .tm_year = 120,
 		.tm_yday = 0
-		};	
+		};
 	time_t now = time(NULL);
 	return difftime(now, mktime(&the2000));
 }

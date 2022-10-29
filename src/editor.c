@@ -45,12 +45,19 @@ char * getPrompt(void) {
 	char * token;
 	int command;
 	char * prompt;
+	if ((prompt = malloc(sizeof(char) * 256)) == NULL) {
+		fprintf(stderr, "Call to malloc() failed.\n");
+		exit(1);
+	}
 
 	fputs("-Edit mode- > ", stdout);
 	fgets(buffer, 512, stdin);
+	if (buffer == NULL || buffer[0] == '\n') return "";
+	buffer[strcspn(buffer, "\n")] = '\0';
 
 	token = strtok(buffer, " ");
-	if (token == NULL || strlen(token) > 1) {
+	if (token == NULL) command = token[0];
+	else if (strlen(token) != 1) {
 		fprintf(stderr, "Command lenght is more then 1 character\n");
 		exit(1);
 	}
@@ -60,14 +67,12 @@ char * getPrompt(void) {
 		case INSERT:
 		    token = strtok(NULL, " ");
 		    if (token == NULL) exit(1);
-		    strcat(prompt, "i ");
+		    strcpy(prompt, "i ");
 		    strcat(prompt, token);
 		    break;
-		case DELETE:
-		    strcpy(prompt, "x");
-		    return prompt;
+		case DELETE: return "x";
 		default:
-		    puts("unreachable");
+		    fprintf(stderr, "Command is not recognized\n");
 		    exit(1);
 	}
 
@@ -76,13 +81,21 @@ char * getPrompt(void) {
 		if (token == NULL) break;
 		strcat(prompt, token);
 	}
-
 	return prompt;
+}
+
+Task * deleteTaskFromTaskArray(Task tasks[], int index) {
+	for (; index < MAX_TASKS; ++index) {
+		if (tasks[index].task[0] == '^') break;
+		tasks[index] = tasks[index + 1];
+	}
+	return tasks;
 }
 
 Task * editMode(Task tasks[], int selectedTask) {
 	char * prompt = getPrompt();
-	if (prompt[0] == 'x') strcpy(tasks[selectedTask].task, "");
+	if (prompt[0] == 'x') deleteTaskFromTaskArray(tasks, selectedTask);
+	free(prompt);
 	return tasks;
 }
 
@@ -106,8 +119,10 @@ int getCommand(void) {
 Task * viewMode(Task tasks[]) {
 	int selectedTask = 0;
 	int command;
-	while ((command = getCommand()) != QUIT) {
+	while (printPreview(tasks, selectedTask), (command = getCommand()) != QUIT) {
+		//printPreview(tasks, selectedTask);
 		//printf("command = %d\n", command);
+		while (tasks[selectedTask].task[0] == '^') selectedTask -= 1;
 		switch (command) {
 			case UP:
 			    selectedTask -= (selectedTask == 0) ? 0 : 1;
@@ -123,7 +138,6 @@ Task * viewMode(Task tasks[]) {
 			case NOTHING:
 			default: break;
 		}
-		printPreview(tasks, selectedTask);
 	}
 	return tasks;
 }
