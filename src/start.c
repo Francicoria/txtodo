@@ -1,10 +1,6 @@
 #include <stdio.h>
-
-#ifdef WIN32
-#include <sys/time.h>
-#else
 #include <time.h>
-#endif
+
 // if the user exceeds any of these caps, i would be impressed.
 #define MAX_TASKS          70
 #define MAX_CONTEXTS_SIZE  40
@@ -31,14 +27,11 @@ typedef struct {
 double timeID(void) {
 	struct tm the2000 = {
 		.tm_sec = 0,  .tm_min = 0, .tm_hour = 0,
-		.tm_mday = 0, .tm_mon = 0, .tm_year = 100,
+		.tm_mday = 0, .tm_mon = 0, .tm_year = 120,
 		.tm_yday = 0
-		};
-	
+		};	
 	time_t now = time(NULL);
-	
-	double tmpID = difftime(now, mktime(&the2000));
-	return tmpID;
+	return difftime(now, mktime(&the2000));
 }
 
 int main(int argc, char ** argv) {
@@ -70,7 +63,6 @@ int main(int argc, char ** argv) {
 				perror("ERROR");
 				return 1;
 			}
-			//printf("\x1b[3mFilename: \x1b[32m%s\x1b[m\n", argv[1]);
 			Task tasks[MAX_TASKS];
 			for (int i = 0; i < MAX_TASKS; ++i) {
 				tasks[i] = fileLineToTask(fp);
@@ -82,7 +74,7 @@ int main(int argc, char ** argv) {
 				if (tasks[i].task[0] == '\0') continue;
 
 				tasks[i] = parseTask(tasks[i]);
-				printf("Task: %s\nIs finished: %s\nPriority letter: %c\nContexts: %s\nTags: %s\n\n",
+				printf("Task: %s\nFinished: %s\nPriority: (%c)\nContexts: %s\nTags: %s\n\n",
 				       tasks[i].task,
 				       tasks[i].status == FINISHED ? "yes" : "no",
 				       tasks[i].priorityLetter,
@@ -98,6 +90,6 @@ int main(int argc, char ** argv) {
 			return 1;
 	}
 
-	putc('\n', stdout);
+	//putc('\n', stdout);
 	return 0;
 }
