@@ -20,7 +20,7 @@ void printPreview(Task tasks[], int selectedTask) {
 		// skip line if it's empty.
 		if (tasks[i].task[0] == '\0') continue;
 
-		if (i == selectedTask) printf("[%3d]  ", i);
+		if (i == selectedTask) printf(" \x1b[1m[%3d]\x1b[m  ", i);
 		else		       printf(" %3d   ", i);
 
 		puts(tasks[i].task);
@@ -46,7 +46,7 @@ char * getPrompt(char * prompt) {
 	char * token;
 	int command;
 
-	fputs("-Edit mode- > ", stdout);
+	fputs("\x1b[35m-Edit mode- >\x1b[m ", stdout);
 	fgets(buffer, 512, stdin);
 	if (buffer == NULL || buffer[0] == '\n') return "";
 	buffer[strcspn(buffer, "\n")] = '\0';
@@ -143,7 +143,7 @@ int getCommand(void) {
 	char buffer[256];
 	int i = 0;
 
-	fputs("-View mode- > ", stdout);
+	fputs("\x1b[36m-View mode- >\x1b[m ", stdout);
 	while ((c = getc(stdin)) != '\n') {
 		if (c == EOF) exit(1);
 		buffer[i++] = c;
@@ -156,8 +156,9 @@ int getCommand(void) {
 
 Task * viewMode(Task tasks[]) {
 	int selectedTask = 0;
-	int command;
-	while (printPreview(tasks, selectedTask), (command = getCommand()) != QUIT) {
+	int command = NOTHING;
+	do {
+		clear_screen
 		//printPreview(tasks, selectedTask);
 		//printf("command = %d\n", command);
 		while (tasks[selectedTask].task[0] == '^') selectedTask -= 1;
@@ -176,6 +177,6 @@ Task * viewMode(Task tasks[]) {
 			case NOTHING:
 			default: break;
 		}
-	}
+	} while (printPreview(tasks, selectedTask), (command = getCommand()) != QUIT);
 	return tasks;
 }

@@ -7,6 +7,11 @@
 #define MAX_TAGS_SIZE      40
 #define MAX_TASK_SIZE      (MAX_CONTEXTS_SIZE + MAX_TAGS_SIZE) + 50
 
+#ifdef WIN32
+#define clear_screen system("cls");
+#else
+#define clear_screen system("clear");
+#endif
 
 enum Status {
 	ACTIVE   = 1,
