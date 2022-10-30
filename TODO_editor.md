@@ -2,5 +2,5 @@
 	- [x] Not able to do anything, just move the selection up and down tasks (and quit with 'q')
 	- [ ] Shortcuts in view mode (press s to save, q to quit, c to edit contexts, x to set the task to 'finished')
 - [x] No argument passed = create new file in view mode
-- [ ] Edit mode
-	- [ ] Make the user edit lines (have to decide how to do this input method, this is completely new to me)
+- [x] Edit mode
+	- [x] Make the user edit lines (have to decide how to do this input method, this is completely new to me)
