@@ -7,6 +7,11 @@
 #define MAX_TAGS_SIZE      40
 #define MAX_TASK_SIZE      (MAX_CONTEXTS_SIZE + MAX_TAGS_SIZE) + 50
 
+#ifdef WIN32
+#define clear_screen system("cls");
+#else
+#define clear_screen system("clear");
+#endif
 
 enum Status {
 	ACTIVE   = 1,
@@ -29,7 +34,7 @@ double timeID(void) {
 		.tm_sec = 0,  .tm_min = 0, .tm_hour = 0,
 		.tm_mday = 0, .tm_mon = 0, .tm_year = 120,
 		.tm_yday = 0
-		};	
+		};
 	time_t now = time(NULL);
 	return difftime(now, mktime(&the2000));
 }
@@ -52,7 +57,8 @@ int main(int argc, char ** argv) {
 			strcpy(empty_tasks[0].task, "Hello!");
 			strcpy(empty_tasks[1].task, "Another one line of dust.");
 			strcpy(empty_tasks[2].task, "Byeeee");
-			strcpy(empty_tasks[3].task, "^");
+			strcpy(empty_tasks[3].task, "nop actually lel");
+			strcpy(empty_tasks[4].task, "^");
 			Task * newTasks = viewMode(empty_tasks);
 			save(fp, newTasks);
 			break;
