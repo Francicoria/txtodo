@@ -28,8 +28,9 @@ void printPreview(Task tasks[], int selectedTask) {
 }
 
 enum EditModeCommands {
-	INSERT = 'i',
-	DELETE = 'd'
+	DELETE = 'd',
+	REPLACE = 'r',
+	NEW_TASK = 'n'
 };
 
 enum Commands {
@@ -40,15 +41,10 @@ enum Commands {
 	NOTHING = ' '
 };
 
-char * getPrompt(void) {
+char * getPrompt(char * prompt) {
 	char buffer[512];
 	char * token;
 	int command;
-	char * prompt;
-	if ((prompt = malloc(sizeof(char) * 256)) == NULL) {
-		fprintf(stderr, "Call to malloc() failed.\n");
-		exit(1);
-	}
 
 	fputs("-Edit mode- > ", stdout);
 	fgets(buffer, 512, stdin);
@@ -64,13 +60,21 @@ char * getPrompt(void) {
 	command = token[0];
 
 	switch (command) {
-		case INSERT:
+		case DELETE: return "d";
+		case REPLACE:
 		    token = strtok(NULL, " ");
 		    if (token == NULL) exit(1);
-		    strcpy(prompt, "i ");
+		    strcpy(prompt, "r ");
 		    strcat(prompt, token);
+		    strcat(prompt, " ");
 		    break;
-		case DELETE: return "x";
+		case NEW_TASK:
+		    token = strtok(NULL, " ");
+		    if (token == NULL) exit(1);
+		    strcpy(prompt, "n ");
+		    strcat(prompt, token);
+		    strcat(prompt, " ");
+		    break;
 		default:
 		    fprintf(stderr, "Command is not recognized\n");
 		    exit(1);
@@ -80,11 +84,12 @@ char * getPrompt(void) {
 		token = strtok(NULL, " ");
 		if (token == NULL) break;
 		strcat(prompt, token);
+		strcat(prompt, " ");
 	}
 	return prompt;
 }
 
-Task * deleteTaskFromTaskArray(Task tasks[], int index) {
+Task * deleteTask(Task tasks[], int index) {
 	for (; index < MAX_TASKS; ++index) {
 		if (tasks[index].task[0] == '^') break;
 		tasks[index] = tasks[index + 1];
@@ -92,10 +97,43 @@ Task * deleteTaskFromTaskArray(Task tasks[], int index) {
 	return tasks;
 }
 
+Task * createTask(Task tasks[], int index, char * taskBody) {
+	int newTaskLine = index + 1;
+	Task bufferTasks[MAX_TASKS];
+	for (int i = 0; i < MAX_TASKS; ++i) {
+		bufferTasks[i] = tasks[i];
+		if (tasks[i].task[0] == '^') break;
+	}
+
+	for (index += 2; index < MAX_TASKS; ++index) {
+		tasks[index] = bufferTasks[index - 1];
+		if (tasks[index].task[0] == '^') break;
+	}
+	strcpy(tasks[newTaskLine].task, taskBody);
+	return tasks;
+}
+
 Task * editMode(Task tasks[], int selectedTask) {
-	char * prompt = getPrompt();
-	if (prompt[0] == 'x') deleteTaskFromTaskArray(tasks, selectedTask);
-	free(prompt);
+	char * string = (char *) calloc(256, sizeof(char));
+	if (string == NULL) {
+		fprintf(stderr, "Call to calloc() failed.\n");
+	}
+	char * rawPrompt = getPrompt(string);
+	char * prompt = strchr(rawPrompt, ' ') + 1;
+	switch (rawPrompt[0]) {
+		case DELETE:
+		    deleteTask(tasks, selectedTask);
+		    break;
+		case REPLACE:
+		    strcpy(tasks[selectedTask].task, prompt);
+		    break;
+		case NEW_TASK:
+		    createTask(tasks, selectedTask, prompt);
+		    break;
+		default:
+		    break;
+	}
+	free(string);
 	return tasks;
 }
 

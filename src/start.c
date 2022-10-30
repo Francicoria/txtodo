@@ -52,7 +52,8 @@ int main(int argc, char ** argv) {
 			strcpy(empty_tasks[0].task, "Hello!");
 			strcpy(empty_tasks[1].task, "Another one line of dust.");
 			strcpy(empty_tasks[2].task, "Byeeee");
-			strcpy(empty_tasks[3].task, "^");
+			strcpy(empty_tasks[3].task, "nop actually lel");
+			strcpy(empty_tasks[4].task, "^");
 			Task * newTasks = viewMode(empty_tasks);
 			save(fp, newTasks);
 			break;
