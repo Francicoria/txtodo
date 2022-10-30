@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CC="gcc"
-CFLAGS="-std=c99 -O2 -Wall -Wextra -Wpedantic"
+CFLAGS="-std=c99 -Os -Wall -Wextra -Wpedantic"
 SRC="src/start.c"
 EXE="txtodo"
 
