@@ -11,7 +11,7 @@ $ ./build.cmd
 
 As I go, i will add sane features like:
 - [x] Parser that is not hardcoded to the todo.txt guidelines, so that I can just add features i'd like.
-- [  ] Live editor (add/modify/remove tasks) (won't use curses, i just don't like it).
+- [ ] Live editor (add/modify/remove tasks) (won't use curses, i just don't like it).
 	- [x] add, modify, remove tasks.
 	- [ ] add, remove projects from tasks.
 	- [ ] add, remove contexts from tasks.
