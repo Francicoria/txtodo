@@ -1,17 +1,28 @@
 #include <stdio.h>
 #include <string.h>
 
-Task fileLineToTask(FILE * file) {
+Task lineToTask(FILE * file) {
 	Task task;
 	task.task[0] = '\0';
-	int strIndex = 0;
-	for (int c; (c = getc(file)) != '\n'; ++strIndex) {
-		if (c == EOF) break;
-		task.task[strIndex] = c;
-	}
-	task.task[strIndex] = '\0';
+	char buf[MAX_TASK_SIZE];
+	fgets(buf, MAX_TASK_SIZE, file);
+	if (strchr(buf, '\n') != NULL) memset(strchr(buf, '\n'), '\0', 1);
+	strcpy(task.task, buf);
 	return task;
 }
+Task * fileToTasks(FILE * file, Task * tasks) {
+	for (int i = 0; i < MAX_TASKS; ++i) {
+		tasks[i] = lineToTask(file);
+		// If the first character of a line is ^
+		// i assume that the rest of the file is empty.
+		if (tasks[i].task[0] == '^') break;
+
+		// skip line if it's empty.
+		if (tasks[i].task[0] == '\0') continue;
+	}
+	return tasks;
+}
+
 
 enum Check {
 	FINISH,

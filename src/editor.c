@@ -1,14 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void save(FILE * file, Task tasks[]) {
+void save(FILE * file, char * filename, Task tasks[]) {
+	if ((file = freopen(filename, "w", file)) == NULL) {
+		perror("ERROR");
+		exit(1);
+	}
 	for (int i = 0; i < MAX_TASKS; ++i) {
-		// If the first character of a line is ^
-		// i assume that the rest of the file is empty.
-		if (tasks[i].task[0] == '^') break;
 		if (tasks[i].task[0] == '\0') continue;
 		strcat(tasks[i].task, "\n");
 		fwrite(tasks[i].task, sizeof(char), strlen(tasks[i].task), file);
+		// If the first character of a line is ^
+		// i assume that the rest of the file is empty.
+		if (tasks[i].task[0] == '^') break;
 	}
 }
 
@@ -17,11 +21,18 @@ void printPreview(Task tasks[], int selectedTask) {
 		// If the first character of a line is ^
 		// i assume that the rest of the file is empty.
 		if (tasks[i].task[0] == '^') break;
-		// skip line if it's empty.
-		if (tasks[i].task[0] == '\0') continue;
-
-		if (i == selectedTask) printf(" \x1b[1m[%3d]\x1b[m  ", i);
-		else		       printf(" %3d   ", i);
+		// I know this looks like shit, they are just exit codes
+		// to have fancy colors and italic/bold.
+		if (tasks[i].task[0] == '\0') {
+			printf(" \x1b[3m%s%3d%s   <empty line>\x1b[m\n",
+			       (i == selectedTask) ? "\x1b[1m[" : "",
+			       i,
+			       (i == selectedTask) ? "]\x1b[m\x1b[3m" : ""
+			       );
+			continue;
+		}
+		if (i == selectedTask)	printf(" \x1b[1m[%3d]\x1b[m   ", i);
+		else			printf(" %3d   ", i);
 
 		puts(tasks[i].task);
 	}
@@ -60,18 +71,12 @@ char * getPrompt(char * prompt) {
 	command = token[0];
 
 	switch (command) {
-		case DELETE: return "d";
+		case DELETE: return "d ";
+		case NEW_TASK:
 		case REPLACE:
 		    token = strtok(NULL, " ");
 		    if (token == NULL) exit(1);
-		    strcpy(prompt, "r ");
-		    strcat(prompt, token);
-		    strcat(prompt, " ");
-		    break;
-		case NEW_TASK:
-		    token = strtok(NULL, " ");
-		    if (token == NULL) exit(1);
-		    strcpy(prompt, "n ");
+		    prompt[0] = command; // either 'n' or 'r'
 		    strcat(prompt, token);
 		    strcat(prompt, " ");
 		    break;
@@ -119,7 +124,7 @@ Task * editMode(Task tasks[], int selectedTask) {
 		fprintf(stderr, "Call to calloc() failed.\n");
 	}
 	char * rawPrompt = getPrompt(string);
-	char * prompt = strchr(rawPrompt, ' ') + 1;
+	char * prompt = rawPrompt + 1;
 	switch (rawPrompt[0]) {
 		case DELETE:
 		    deleteTask(tasks, selectedTask);

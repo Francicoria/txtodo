@@ -45,7 +45,6 @@ int main(int argc, char ** argv) {
 
 	switch (argc) {
 		case 1:
-			// TODO
 			printf("No argument passed, assuming you want to create a new todo.txt file.\n");
 			double filenameTmpID = timeID();
 			snprintf(filename, 90, "tmp_%.f.todo.txt", filenameTmpID);
@@ -60,7 +59,7 @@ int main(int argc, char ** argv) {
 			strcpy(empty_tasks[3].task, "nop actually lel");
 			strcpy(empty_tasks[4].task, "^");
 			Task * newTasks = viewMode(empty_tasks);
-			save(fp, newTasks);
+			save(fp, filename, newTasks);
 			break;
 		case 2:
 			strcpy(filename, argv[1]);
@@ -69,33 +68,15 @@ int main(int argc, char ** argv) {
 				perror("ERROR");
 				return 1;
 			}
-			Task tasks[MAX_TASKS];
-			for (int i = 0; i < MAX_TASKS; ++i) {
-				tasks[i] = fileLineToTask(fp);
-				// If the first character of a line is ^
-				// i assume that the rest of the file is empty.
-				if (tasks[i].task[0] == '^') break;
-
-				// skip line if it's empty.
-				if (tasks[i].task[0] == '\0') continue;
-
-				tasks[i] = parseTask(tasks[i]);
-				printf("Task: %s\nFinished: %s\nPriority: (%c)\nContexts: %s\nTags: %s\n\n",
-				       tasks[i].task,
-				       tasks[i].status == FINISHED ? "yes" : "no",
-				       tasks[i].priorityLetter,
-				       tasks[i].contexts,
-				       tasks[i].tags
-				       );
-			}
-			//parseFile(fp);
+			Task emptyTasks[MAX_TASKS];
+			Task * tasks = fileToTasks(fp, emptyTasks);
+			viewMode(tasks);
+			save(fp, filename, tasks);
 			fclose(fp);
 			break;
 		default:
 			fprintf(stderr, "Only one file can be passed as an argument.\nIf there are spaces in the filename, put apostrophes around it.\n");
 			return 1;
 	}
-
-	//putc('\n', stdout);
 	return 0;
 }
