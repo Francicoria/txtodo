@@ -16,7 +16,7 @@ void save(FILE * file, char * filename, Task tasks[]) {
 	}
 }
 
-void printPreview(Task tasks[], int selectedTask) {
+void print_preview(Task tasks[], int selectedTask) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
 		// If the first character of a line is ^
 		// i assume that the rest of the file is empty.
@@ -38,7 +38,7 @@ void printPreview(Task tasks[], int selectedTask) {
 	}
 }
 
-enum EditModeCommands {
+enum Edit_Mode_Commands {
 	DELETE = 'd',
 	REPLACE = 'r',
 	NEW_TASK = 'n'
@@ -52,7 +52,7 @@ enum Commands {
 	NOTHING = ' '
 };
 
-char * getPrompt(char * prompt) {
+char * get_prompt(char * prompt) {
 	char buffer[512];
 	char * token;
 	int command;
@@ -94,7 +94,7 @@ char * getPrompt(char * prompt) {
 	return prompt;
 }
 
-Task * deleteTask(Task tasks[], int index) {
+Task * delete_task(Task tasks[], int index) {
 	for (; index < MAX_TASKS; ++index) {
 		if (tasks[index].task[0] == '^') break;
 		tasks[index] = tasks[index + 1];
@@ -102,7 +102,7 @@ Task * deleteTask(Task tasks[], int index) {
 	return tasks;
 }
 
-Task * createTask(Task tasks[], int index, char * taskBody) {
+Task * create_task(Task tasks[], int index, char * taskBody) {
 	int newTaskLine = index + 1;
 	Task bufferTasks[MAX_TASKS];
 	for (int i = 0; i < MAX_TASKS; ++i) {
@@ -118,22 +118,22 @@ Task * createTask(Task tasks[], int index, char * taskBody) {
 	return tasks;
 }
 
-Task * editMode(Task tasks[], int selectedTask) {
+Task * edit_mode(Task tasks[], int selectedTask) {
 	char * string = (char *) calloc(256, sizeof(char));
 	if (string == NULL) {
 		fprintf(stderr, "Call to calloc() failed.\n");
 	}
-	char * rawPrompt = getPrompt(string);
+	char * rawPrompt = get_prompt(string);
 	char * prompt = rawPrompt + 1;
 	switch (rawPrompt[0]) {
 		case DELETE:
-		    deleteTask(tasks, selectedTask);
+		    delete_task(tasks, selectedTask);
 		    break;
 		case REPLACE:
 		    strcpy(tasks[selectedTask].task, prompt);
 		    break;
 		case NEW_TASK:
-		    createTask(tasks, selectedTask, prompt);
+		    create_task(tasks, selectedTask, prompt);
 		    break;
 		default:
 		    break;
@@ -142,7 +142,7 @@ Task * editMode(Task tasks[], int selectedTask) {
 	return tasks;
 }
 
-int getCommand(void) {
+int get_command(void) {
 	int command;
 	int c;
 	char buffer[256];
@@ -159,12 +159,12 @@ int getCommand(void) {
 	return command;
 }
 
-Task * viewMode(Task tasks[]) {
+Task * view_mode(Task tasks[]) {
 	int selectedTask = 0;
 	int command = NOTHING;
 	do {
 		clear_screen
-		//printPreview(tasks, selectedTask);
+		//print_preview(tasks, selectedTask);
 		//printf("command = %d\n", command);
 		while (tasks[selectedTask].task[0] == '^') selectedTask -= 1;
 		switch (command) {
@@ -177,11 +177,11 @@ Task * viewMode(Task tasks[]) {
 			    break;
 
 			case EDIT:
-			    tasks = editMode(tasks, selectedTask);
+			    tasks = edit_mode(tasks, selectedTask);
 			    break;
 			case NOTHING:
 			default: break;
 		}
-	} while (printPreview(tasks, selectedTask), (command = getCommand()) != QUIT);
+	} while (print_preview(tasks, selectedTask), (command = get_command()) != QUIT);
 	return tasks;
 }

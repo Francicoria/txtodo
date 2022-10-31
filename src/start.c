@@ -52,13 +52,13 @@ int main(int argc, char ** argv) {
 				perror("ERROR");
 				return 1;
 			}
-			Task empty_tasks[MAX_TASKS];
-			strcpy(empty_tasks[0].task, "Hello!");
-			strcpy(empty_tasks[1].task, "Another one line of dust.");
-			strcpy(empty_tasks[2].task, "Byeeee");
-			strcpy(empty_tasks[3].task, "nop actually lel");
-			strcpy(empty_tasks[4].task, "^");
-			Task * newTasks = viewMode(empty_tasks);
+			Task emptyNewTasks[MAX_TASKS];
+			strcpy(emptyNewTasks[0].task, "Hello!");
+			strcpy(emptyNewTasks[1].task, "Another one line of dust.");
+			strcpy(emptyNewTasks[2].task, "Byeeee");
+			strcpy(emptyNewTasks[3].task, "nop actually lel");
+			strcpy(emptyNewTasks[4].task, "^");
+			Task * newTasks = view_mode(emptyNewTasks);
 			save(fp, filename, newTasks);
 			break;
 		case 2:
@@ -69,8 +69,8 @@ int main(int argc, char ** argv) {
 				return 1;
 			}
 			Task emptyTasks[MAX_TASKS];
-			Task * tasks = fileToTasks(fp, emptyTasks);
-			viewMode(tasks);
+			Task * tasks = file_to_tasks(fp, emptyTasks);
+			view_mode(tasks);
 			save(fp, filename, tasks);
 			fclose(fp);
 			break;

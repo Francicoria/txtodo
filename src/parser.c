@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-Task lineToTask(FILE * file) {
+Task line_to_task(FILE * file) {
 	Task task;
 	task.task[0] = '\0';
 	char buf[MAX_TASK_SIZE];
@@ -10,9 +10,9 @@ Task lineToTask(FILE * file) {
 	strcpy(task.task, buf);
 	return task;
 }
-Task * fileToTasks(FILE * file, Task * tasks) {
+Task * file_to_tasks(FILE * file, Task * tasks) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
-		tasks[i] = lineToTask(file);
+		tasks[i] = line_to_task(file);
 		// If the first character of a line is ^
 		// i assume that the rest of the file is empty.
 		if (tasks[i].task[0] == '^') break;
@@ -30,7 +30,7 @@ enum Check {
 	CONTEXTS_TAGS
 };
 
-Task parseTask(Task task) {
+Task parse_task(Task task) {
 	int check = FINISH;
 	char * token;
 	char taskBody[MAX_TASK_SIZE] = {0};
