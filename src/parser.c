@@ -2,23 +2,25 @@
 #include <string.h>
 
 Task line_to_task(FILE * file) {
-	Task task;
-	task.task[0] = '\0';
+	Task task = {.task[0] = '\0'};
 	char buf[MAX_TASK_SIZE];
 	fgets(buf, MAX_TASK_SIZE, file);
+	if (feof(file)) {
+		task.status = LAST;
+		return task;
+	}
 	if (strchr(buf, '\n') != NULL) memset(strchr(buf, '\n'), '\0', 1);
 	strcpy(task.task, buf);
+	task.status = (task.task[0] == '\0') ? EMPTY : ACTIVE;
 	return task;
 }
 Task * file_to_tasks(FILE * file, Task * tasks) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
 		tasks[i] = line_to_task(file);
-		// If the first character of a line is ^
-		// i assume that the rest of the file is empty.
-		if (tasks[i].task[0] == '^') break;
-
+		if (tasks[i].status == LAST) break;
+		tasks[i] = parse_task(tasks[i]);
 		// skip line if it's empty.
-		if (tasks[i].task[0] == '\0') continue;
+		if (tasks[i].status == EMPTY) continue;
 	}
 	return tasks;
 }
@@ -47,8 +49,9 @@ Task parse_task(Task task) {
 	while (token != NULL) {
 		switch (check) {
 			case FINISH:
-				if (token[0] == 'x' &&
-				    token[1] == '\0') {
+				/*if (token[0] == 'x' &&
+				    token[1] == '\0')*/
+				if (strncmp(token, "x", 1)) {
 					task.status = FINISHED;
 					token = strtok(NULL, " ");
 				} else task.status = ACTIVE;

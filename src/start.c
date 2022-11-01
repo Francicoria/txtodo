@@ -52,12 +52,13 @@ int main(int argc, char ** argv) {
 				perror("ERROR");
 				return 1;
 			}
-			Task emptyNewTasks[MAX_TASKS];
-			strcpy(emptyNewTasks[0].task, "Hello!");
-			strcpy(emptyNewTasks[1].task, "Another one line of dust.");
-			strcpy(emptyNewTasks[2].task, "Byeeee");
-			strcpy(emptyNewTasks[3].task, "nop actually lel");
-			strcpy(emptyNewTasks[4].task, "^");
+			Task emptyNewTasks[MAX_TASKS] = {
+				{.status = ACTIVE, .task = "Hello!"},
+				{.status = ACTIVE, .task = "Another one line of dust."},
+				{.status = ACTIVE, .task = "Byeeee"},
+				{.status = ACTIVE, .task = "nop actually lel"},
+				{.status = LAST}
+			};
 			Task * newTasks = view_mode(emptyNewTasks);
 			save(fp, filename, newTasks);
 			break;

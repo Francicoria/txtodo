@@ -7,23 +7,19 @@ void save(FILE * file, char * filename, Task tasks[]) {
 		exit(1);
 	}
 	for (int i = 0; i < MAX_TASKS; ++i) {
-		if (tasks[i].task[0] == '\0') continue;
+		if (tasks[i].status == EMPTY) continue;
+		if (tasks[i].status == LAST) break;
 		strcat(tasks[i].task, "\n");
 		fwrite(tasks[i].task, sizeof(char), strlen(tasks[i].task), file);
-		// If the first character of a line is ^
-		// i assume that the rest of the file is empty.
-		if (tasks[i].task[0] == '^') break;
 	}
 }
 
 void print_preview(Task tasks[], int selectedTask) {
 	for (int i = 0; i < MAX_TASKS; ++i) {
-		// If the first character of a line is ^
-		// i assume that the rest of the file is empty.
-		if (tasks[i].task[0] == '^') break;
+		if (tasks[i].status == LAST) break;
 		// I know this looks like shit, they are just exit codes
 		// to have fancy colors and italic/bold.
-		if (tasks[i].task[0] == '\0') {
+		if (tasks[i].status == EMPTY) {
 			printf(" \x1b[3m%s%3d%s   <empty line>\x1b[m\n",
 			       (i == selectedTask) ? "\x1b[1m[" : "",
 			       i,
@@ -96,7 +92,7 @@ char * get_prompt(char * prompt) {
 
 Task * delete_task(Task tasks[], int index) {
 	for (; index < MAX_TASKS; ++index) {
-		if (tasks[index].task[0] == '^') break;
+		if (tasks[index].status == LAST) break;
 		tasks[index] = tasks[index + 1];
 	}
 	return tasks;
@@ -107,12 +103,12 @@ Task * create_task(Task tasks[], int index, char * taskBody) {
 	Task bufferTasks[MAX_TASKS];
 	for (int i = 0; i < MAX_TASKS; ++i) {
 		bufferTasks[i] = tasks[i];
-		if (tasks[i].task[0] == '^') break;
+		if (tasks[i].status == LAST) break;
 	}
 
 	for (index += 2; index < MAX_TASKS; ++index) {
 		tasks[index] = bufferTasks[index - 1];
-		if (tasks[index].task[0] == '^') break;
+		if (tasks[index].status == LAST) break;
 	}
 	strcpy(tasks[newTaskLine].task, taskBody);
 	return tasks;
@@ -162,18 +158,19 @@ int get_command(void) {
 Task * view_mode(Task tasks[]) {
 	int selectedTask = 0;
 	int command = NOTHING;
+	clear_screen
 	do {
-		clear_screen
 		//print_preview(tasks, selectedTask);
 		//printf("command = %d\n", command);
-		while (tasks[selectedTask].task[0] == '^') selectedTask -= 1;
+		while (tasks[selectedTask].status == LAST) selectedTask -= 1;
 		switch (command) {
 			case UP:
+			    // Stops you from going below the n°0 task.
 			    selectedTask -= (selectedTask == 0) ? 0 : 1;
 			    break;
 			case DOWN:
-			    if (selectedTask == MAX_TASKS || tasks[selectedTask + 1].task[0] == '^') selectedTask += 0;
-			    else selectedTask += 1;
+			    // Stops you from going above the last task.
+			    selectedTask += (selectedTask == MAX_TASKS || tasks[selectedTask + 1].status == LAST) ? 0 : 1;
 			    break;
 
 			case EDIT:
@@ -182,6 +179,7 @@ Task * view_mode(Task tasks[]) {
 			case NOTHING:
 			default: break;
 		}
+		clear_screen
 	} while (print_preview(tasks, selectedTask), (command = get_command()) != QUIT);
 	return tasks;
 }
