@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "start.h"
+#include "parser.h"
+#include "editor.h"
 
 void save(FILE * file, char * filename, Task tasks[]) {
 	if ((file = freopen(filename, "w", file)) == NULL) {
@@ -33,20 +36,6 @@ void print_preview(Task tasks[], int selectedTask) {
 		puts(tasks[i].task);
 	}
 }
-
-enum Edit_Mode_Commands {
-	DELETE = 'd',
-	REPLACE = 'r',
-	NEW_TASK = 'n'
-};
-
-enum Commands {
-	DOWN = 'j',
-	UP   = 'k',
-	EDIT = 'e',
-	QUIT = 'q',
-	NOTHING = ' '
-};
 
 char * get_prompt(char * prompt) {
 	char buffer[512];

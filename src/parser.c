@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include "start.h"
+#include "parser.h"
+#include "editor.h"
 
 Task line_to_task(FILE * file) {
 	Task task = {.task[0] = '\0'};
@@ -24,13 +27,6 @@ Task * file_to_tasks(FILE * file, Task * tasks) {
 	}
 	return tasks;
 }
-
-
-enum Check {
-	FINISH,
-	PRIORITY,
-	CONTEXTS_TAGS
-};
 
 Task parse_task(Task task) {
 	int check = FINISH;

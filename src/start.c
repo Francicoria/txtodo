@@ -1,33 +1,8 @@
 #include <stdio.h>
 #include <time.h>
-
-// if the user exceeds any of these caps, i would be impressed.
-#define MAX_TASKS          70
-#define MAX_CONTEXTS_SIZE  40
-#define MAX_TAGS_SIZE      40
-#define MAX_TASK_SIZE      (MAX_CONTEXTS_SIZE + MAX_TAGS_SIZE) + 50
-
-#ifdef _WIN32
-#define clear_screen system("cls");
-#else
-#define clear_screen system("clear");
-#endif
-
-enum Status {
-	ACTIVE   = 1,
-	FINISHED = 0
-};
-
-typedef struct {
-	char task[MAX_TASK_SIZE];
-	int status;
-	char priorityLetter;
-	char contexts[MAX_CONTEXTS_SIZE];
-	char tags[MAX_TAGS_SIZE];
-} Task;
-
-#include "parser.c"
-#include "editor.c"
+#include "start.h"
+#include "parser.h"
+#include "editor.h"
 
 double timeID(void) {
 	struct tm the2000 = {

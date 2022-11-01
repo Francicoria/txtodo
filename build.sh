@@ -2,7 +2,7 @@
 
 CC="gcc"
 CFLAGS="-std=c99 -Os -Wall -Wextra -Wpedantic"
-SRC="src/start.c"
+SRC="src/start.c src/parser.c src/editor.c"
 EXE="txtodo"
 
 set -xe
